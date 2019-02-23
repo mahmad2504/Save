@@ -1,0 +1,45 @@
+/*Theme the Tabulator element*/
+
+
+html {
+     background: #00416a;
+   }
+   body {
+     background-repeat: no-repeat;
+     background: #cbccc8;
+     background: -webkit-gradient(linear, left top, left bottom, from(#e4e5e6), to(#00416a));
+     background: -moz-linear-gradient(top, #8e9eab, #eef2f3);
+     filter: progid: DXImageTransform.Microsoft.gradient(startColorstr='#8e9eab', endColorstr='#eef2f3');
+   }
+
+#table1{
+    background-color:#FFF;
+    border: 3px solid #fff;
+    border-radius: 4px;
+}
+
+/*Theme the header*/
+#table1 .tabulator-header {
+    background-color:#000;
+    color:#fff;
+}
+
+/*Allow column header names to wrap lines*/
+#table1 .tabulator-header .tabulator-col,
+#table1 .tabulator-header .tabulator-col-row-handle {
+    white-space: normal;
+	background-color:#404040;
+	background-image: linear-gradient( #16222a, #3a6073);
+	
+}
+
+/*Color the table rows*/
+#table1 .tabulator-tableHolder .tabulator-table .tabulator-row{
+    color:#000;
+    background-color: #FFF;
+}
+
+/*Color even rows*/
+    #table1 .tabulator-tableHolder .tabulator-table .tabulator-row:nth-child(even) {
+    background-color: #CDCDCD;
+}

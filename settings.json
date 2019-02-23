@@ -1,0 +1,58 @@
+{
+	"logfile" : "log.txt",
+	"data_folder" : "data",
+	"routes" : [
+		{
+			"method" : "ANY",
+			"uri" : "/sync",
+			"endpoint" : "modules/sync/index.php"
+		},
+		{
+			"method" : "ANY",
+			"uri" : "/product/:product",
+			"endpoint" : "modules/product/index.php"
+		},
+		{
+			"method" : "ANY",
+			"uri" : "/package/:package",
+			"endpoint" : "modules/package/index.php"
+		}
+	],
+	"cve_sources" : {
+		"nvd" : [
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2019.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2018.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2017.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2016.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2015.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2014.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2013.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2012.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2011.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2010.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2009.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2008.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2007.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2006.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2005.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2004.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2003.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2002.json.zip"
+		]
+	},
+	"mongo_server" : "mongodb://localhost:27017",
+	"mongo" : {
+		"server" : "mongodb://localhost:27017",
+		"db" : "cvedb",
+		"collections" : {
+			"cve" : "cve"
+		}
+	},
+	"cpemaps" : [ "cpemap.xlsx" ],
+	"products" : [
+		{
+			"name" : "MEL-1.0.1",
+			"menifest" : "menifest_mel_1.0.xlsx"
+		}
+	]
+}
