@@ -48,7 +48,15 @@ class MongoCollection
 	{
 		$this->col->insertMany($array);		
 	}
+	function CreateIndex($array) //(['field1','field2']);
+	{
+		$indexes = array();
+		foreach($array as $field)
+			$indexes[$field] = 1;
 
+		//var_dump($indexes);
+		$this->col->createIndex($indexes);
+	}
 	function CreateTextIndex($array) //(['field1','field2']);
 	{
 		$indexes = array();

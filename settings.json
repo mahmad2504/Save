@@ -9,12 +9,12 @@
 		},
 		{
 			"method" : "ANY",
-			"uri" : "/product/:product",
+			"uri" : "/:product/show",
 			"endpoint" : "modules/product/index.php"
 		},
 		{
 			"method" : "ANY",
-			"uri" : "/package/:package",
+			"uri" : "/:product/:package/show",
 			"endpoint" : "modules/package/index.php"
 		}
 	],
@@ -40,19 +40,32 @@
 			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2002.json.zip"
 		]
 	},
-	"mongo_server" : "mongodb://localhost:27017",
 	"mongo" : {
 		"server" : "mongodb://localhost:27017",
-		"db" : "cvedb",
-		"collections" : {
-			"cve" : "cve"
+		"db" : "cvedb"
+	},
+	"jira" : {
+		"conf" : {
+			"mentor" : {
+				"url" : "http://jira.alm.mentorg.com:8080",
+				"cred" : {
+					"user" : "himp",
+					"pass" : "hmip"
 		}
 	},
-	"cpemaps" : [ "cpemap.xlsx" ],
-	"products" : [
-		{
-			"name" : "MEL-1.0.1",
-			"menifest" : "menifest_mel_1.0.xlsx"
+			"atlassian" : {
+				"url" : "https://mentorgraphics.atlassian.net",
+				"cred" : {
+					"user" : "mahmad",
+					"pass" : "gsmp1000"
+				}
+			}
 		}
-	]
+	},
+	"menifests" : {
+		"folder" : "data/menifests"
+	},
+	"cpemap" : {
+		"file" : "data/cpemap/cpemap.xlsx"
+		}
 }

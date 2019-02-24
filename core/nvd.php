@@ -225,6 +225,7 @@ class Nvd extends MongoCollection
 		}
 		SendConsole(time(),"Updating Search Indexes"); 
 		$this->CreateTextIndex(["configurations.nodes.cpe_match.cpe23Uri","configurations.nodes.children.cpe_match.cpe23Uri"]);
+		$this->CreateIndex(["cve.CVE_data_meta.ID"]);
 	}
 	function PreProcess($filename)
 	{

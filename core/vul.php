@@ -15,6 +15,7 @@ class Vuls extends MongoCollection
 		$this->count = $this->CountDocs();
 		$criteria = ["type"=>"updatedon"];
 		$records = $this->Find($criteria);
+		if(count($records)>0)
 		$this->signature = $records[0]->updatedon;
 		//var_dump($records);
 	}
@@ -31,26 +32,28 @@ class Vuls extends MongoCollection
 		//$this->Drop();
 		
 		$source = $cvecol->Name();
-		SendConsole(time(),"Updating vulnerabilities");
+		//SendConsole(time(),"Updating vulnerabilities");
 		foreach($packages as $package)
 		{
 			foreach($package->versions as $version)
 			{
-				foreach($version->products as $product)
-				{
 					foreach($package->cves as $cve)
 					{
 						$query_entries[] = $cve->cve->CVE_data_meta->ID; 
 					}
 					if(!isset($package->aliases))
 						$package->aliases = array();
-					
+				SendConsole(time(),"Updating "." ".$package->name." ".$version->number);
 					$cves = $cvecol->GetCVEMatches($query_entries,$package->name,$version->number,$package->aliases);
-					//var_dump($cves);
+				
+				foreach($version->products as $product)
+				{
 					$this->CreateVul($cves,$product,$package->name,$version->number,$source);
 				}
 			}
 		}
+		SendConsole(time(),"Updating Indexes");
+		$this->CreateIndex(["cve","package","version"]);		
 		$this->CreateTextIndex(["product.name","package"]);
 	}
 	function CreateVul($cves,$product,$packagename,$versionnumber,$source)
@@ -100,19 +103,20 @@ class Vuls extends MongoCollection
 	function UpdateVulInDb($vul)
 	{
 		global $vulstatuscoll;
-		$menifest = $vul->product->menifest;
 		$cve = $vul->cve;
 		$package = $vul->package;
 		$version = $vul->version;
 		
 		//$this->ChangeCol($this->statuscolname);
 	
-		$infields = ['$and' => [
+		/*$infields = ['$and' => [
 						['cve' => $cve],
-						['product.menifest' => $menifest],
+						['product.name' => $vul->product->name],
 						['package' => $package],
 						['version' => $version]
-						]];
+						]];*/
+		$infields = ['cve' => $cve,'product.name' => $vul->product->name,'package' => $package,'version' => $version];
+	
 		$tickets = $this->Find($infields);
 		
 		if(count($tickets)==0)

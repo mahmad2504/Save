@@ -6,6 +6,8 @@ require_once __DIR__."/logging.php";
 require_once __DIR__."/http_request.php";
 require_once __DIR__."/router.php";
 require_once __DIR__."/utility.php";
+require_once __DIR__."/jirarest.php";
+
 // Sets Route
 // method can be any HTTP method, like GET, PUT etc (casesensitive)
 // $endpoint is the uri like  can be file or function 
@@ -114,6 +116,40 @@ function SendResponse($data=null,$error=null)
 		echo json_encode($response);
 	fclose($logfile);
 	exit();
+}
+
+function multiexplode ($delimiters,$string) {
+
+    $ready = str_replace($delimiters, $delimiters[0], $string);
+    $launch = explode($delimiters[0], $ready);
+    return  $launch;
+}
+function ReadFiles($directory,$filter)
+{
+	$files = array();
+	$dir = opendir($directory); // open the cwd..also do an err check.
+	while(false != ($file = readdir($dir))) 
+	{
+		if(($file != ".") and ($file != "..")) 
+		{
+			//echo $file." ".is_dir($directory.$file).EOL;
+			//echo  is_dir($directory."//".$file).EOL;
+			
+			if(!is_dir($directory."//".$file))
+			{
+				if( strpos( $file, $filter ) !== false) 
+				{
+					$files[] = $file; // put in array.
+				}
+			}
+		}
+		//natsort($files); // sort.
+	}
+	return $files;
+}
+function CreateJiraRest()
+{
+	return new JiraRest();	
 }
 //require_once($DOCUMENT_ROOT.'http/reuest.php');
 ?>

@@ -2,7 +2,26 @@
 global $db;
 $vulcol = new Vuls();
 $tickets = new Tickets();
-$vuls = $vulcol->FindRegEx('package',$params->package);
+
+if($params->package == 'all')
+	$query = ['product.name' => [ '$regex' => $params->product, '$options' => 'i' ]];
+else
+{
+	$query = ['product.name' => [ '$regex' => $params->product, '$options' => 'i' ],
+	          'package' => [ '$regex' => $params->package, '$options' => 'i' ]];
+}
+
+//,
+//		  'package' => [ '$regex' => $params->package, '$options' => 'i' ]
+//		 ];
+
+//			 [ 'product.name' => [ '$regex' => $params->product, '$options' => 'i' ]]];
+			
+$collection = $vulcol->GetHandle(); 
+$cursor  = $collection->find($query);
+$vuls = $cursor->toArray();
+
+//$vuls = $vulcol->FindRegEx('package',$params->package);
 $lastupdated = $vulcol->GetUpdateTime();
 //var_dump($vuls);
 $tabledata = array();

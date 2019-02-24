@@ -17,11 +17,16 @@ class Packages extends MongoCollection
 		global $db;
 		parent::__construct($db,$this->colname);
 		
-		$this->data_folder = $settings->data_folder;
-		$productsmeta = $settings->products;
-		$cpemeta = $settings->cpemaps;
-		$this->packages = $this->ReadProductData($productsmeta);
-		$this->ReadCpeMapping($cpemeta);
+		$this->data_folder = $settings->data_folder;	
+		$datafiles = $this->GetMenifestFiles($settings->menifests->folder);
+		$this->packages = $this->ReadProductData($settings->menifests->folder,$datafiles);
+		$this->ReadCpeMapping($settings->cpemap->file);
+	}
+	function GetMenifestFiles($folder)
+	{
+		global $settings;
+		$files  = ReadFiles($folder,'.xlsx');
+		return $files ;
 	}
 	function UpdateDb()
 	{
@@ -34,15 +39,22 @@ class Packages extends MongoCollection
 		return $this->packages ;
 	}
 	
-	function ReadProductData($productsmeta)
+	function ReadProductData($folder,$files)
 	{
 		$packages = array();
-		foreach($productsmeta as $product)
+		foreach($files as $filename)
 		{
 			$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-			$spreadsheet = $reader->load($this->data_folder."/".$product->menifest);
+			$spreadsheet = $reader->load($folder."/".$filename);
 			$sheetData = $spreadsheet->getActiveSheet()->toArray();
-			SendConsole(time(),"Importing ".$product->menifest);
+			SendConsole(time(),"Importing ".$filename);
+			$product = new StdClass();
+			$product->menifest = $filename;
+			
+			$product->name = multiexplode(["_",".xlsx"],$filename);
+			
+			$product->name = strtolower($product->name[1]);
+		
 			for($i=1;$i<count($sheetData);$i++)
 			{
 				$row = $sheetData[$i];
@@ -61,8 +73,7 @@ class Packages extends MongoCollection
 							$nproduct->name = $product->name;
 							$nproduct->menifest = $product->menifest;
 							$version->products[$product->menifest] = $nproduct;
-						}
-						//$version->products[$product->name] = $product->name;						
+						}					
 					}
 					else
 					{
@@ -111,14 +122,12 @@ class Packages extends MongoCollection
 		
 		return $packages;
 	}
-	function ReadCpeMapping($cpemaps)
+	function ReadCpeMapping($filename)
 	{
 		$packages = $this->packages;
-		foreach($cpemaps as $cpemap)
-		{
-			SendConsole(time(),"Importing ".$cpemap); 
+		SendConsole(time(),"Importing ".$filename); 
 			$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
-			$spreadsheet = $reader->load($this->data_folder."/".$cpemap);
+		$spreadsheet = $reader->load($filename);
 			$sheetData = $spreadsheet->getActiveSheet()->toArray();
 			for($i=1;$i<count($sheetData);$i++)
 			{
@@ -139,7 +148,6 @@ class Packages extends MongoCollection
 					
 				}
 			}
-		}
 		$this->packages = array_values($packages);
 		return $this->packages;
 	}
