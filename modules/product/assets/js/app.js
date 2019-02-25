@@ -24,8 +24,7 @@ $(function()
 		columns:
 		[
 			{resizable: false,title:"",formatter:"rownum", align:"center", width:"5%", headerSort:false},
-			{
-				title:"Package", 
+			{ title:"Package", 
 				columns:
 				[
 					{resizable: false,title:"Name",field:"name", width:"15%", formatter:"html"},
@@ -33,7 +32,15 @@ $(function()
 					{title:"Product", field:"product",width:"20%"}
 				]
 			},
-			{resizable: false,title:"Matches", field:"level2_vulcount", align:"left", sorter:"number", width:"20%"},
+			{ title:"Vulnerabilities", 
+				columns:
+				[
+					{resizable: false,title:"Open", field:"open", align:"left", sorter:"number", width:"10%"},
+					{resizable: false,title:"Idnetified", field:"fix", align:"left", sorter:"number", width:"10%"},
+					{resizable: false,title:"Fixed", field:"fixed", align:"left", sorter:"number", width:"10%"},
+					{resizable: false,title:"Ignored", field:"ignored", align:"left", sorter:"number", width:"10%"},
+				]
+			}
 		]
 	};
 	var table = new Tabulator("#table1", settings);

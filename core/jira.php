@@ -56,9 +56,11 @@ class Jira extends MongoCollection implements ITicket
 				if($issue->status  == 'done')
 					$issue->progress = 100;
 				else
+				{
 					$issue->progress = $issue->timespent/$issue->estimate * 100;
-				if($issue->progress > 100)
-					$issue->progress = 100;
+					if($issue->progress >= 100)
+						$issue->progress = 99;
+				}
 			}
 			$issue->source = 'jira';
 			if(!isset($issue->product))

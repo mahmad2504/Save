@@ -19,6 +19,7 @@ class Vuls extends MongoCollection
 		$this->signature = $records[0]->updatedon;
 		//var_dump($records);
 	}
+	
 	function GetUpdateTime()
 	{
 		return $this->signature;

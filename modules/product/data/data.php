@@ -1,12 +1,10 @@
 <?php
-global $db;
-$vulcol = new Vuls();
-$vuls = $vulcol->GetVulByProduct($params->product);
-$packages = array();
+
+$vuls = GetVulnerabilities($params->product);
+
 foreach($vuls as $vul)
 {
-	$vul->type->weight = VulWeight($vul->type);
-	$pfqn = $vul->package.'##'.$vul->version."##".$vul->product->name;
+	$pfqn = $vul->package.'##'.$vul->version."##".$vul->product;
 	//var_dump($pfqn);
 	if(!isset($packages[$pfqn]))
 	{
@@ -15,7 +13,7 @@ foreach($vuls as $vul)
 		$package->vuls =  array();
 		$package->name = $vul->package;
 		$package->version = $vul->version;
-		$package->product = $vul->product->name;
+		$package->product = $vul->product;
 		//echo "---->".$pfqn." ".$package->name." ".$package->version."<br>";
 	}
 	$package = &$packages[$pfqn];
@@ -25,20 +23,28 @@ foreach($vuls as $vul)
 //var_dump($packages);
 foreach($packages as $pfqn=>&$package)
 {
-	$weight_1 = 0;
+	$fixed = 0;
 	$weight_2 = 0;
-	
+	$ignored = 0;
+	$fix = 0;
+	$open = 0;
 	foreach($package->vuls as $vul)
 	{
-		if($vul->type->weight == 1)
-			$weight_1++;
-		else if($vul->type->weight == 2)
-			$weight_2++;
-		
+		//var_dump($vul);
+		//echo($vul->status)."<br>";
+		if($vul->status == 'FIX')
+			$fix++;
+		else if($vul->status == 'IGNORE')
+			$ignored++;
+		else if($vul->status == 'FIXED')
+			$fixed++;
+		else
+			$open++;
 	}
-	$package->level1_vulcount = $weight_1;
-	$package->level2_vulcount = $weight_2;
-	
+	$package->open = $open;
+	$package->fix = $fix;
+	$package->fixed = $fixed;
+	$package->ignored = $ignored;
 	//var_dump($package);
 	//echo $package->product." ".$package->name." ".$package->version." ".$weight_1." ".$weight_2."<br>";
 }
@@ -54,13 +60,4 @@ foreach($packages as &$package)
 	$tabledata[] = &$package;
 }
 SendResponse($tabledata);
-function VulWeight($vultype)
-{
-	$weight = 0;
-	if(strlen($vultype->package_match)>0)
-		$weight++;
-	if(strlen($vultype->version_match)>0)
-		$weight++;
-	return $weight;
-}
 ?>

@@ -10,11 +10,17 @@ $(function()
 	$('#checkbox_viewall').click(function(){
 		table.setFilter(customFilter, {});
 	});
+	$(document).on('click','.otherfixed',function(event){
+		mscConfirm("Delete?",function(){
+			alert("Post deleted");
+		});
+	});
+
 	$(document).on('click','.delete',function(event){
 		//console.log($(this).data('id'));
 		//console.log(event.target);
 		params.id = $(this).data('id');
-		console.log(cur_row);
+		//console.log(cur_row);
 		mscConfirm("Delete?",function(){
 			//console.log(params);
 			GetResource(0,resource,'data=deletevul',params,null,successcb) ;
@@ -45,6 +51,7 @@ $(function()
 			//response - the JSON object returned in the body of the response.
 			if(response.data === undefined)
 				return [];//return the tableData property of a response json object
+			//console.log(response.data);
 			return response.data;
 		},
 		columns:
@@ -95,28 +102,34 @@ $(function()
 					return value;
 				}
 			},
-			{tooltip:false, resizable: false, title:"Ticket", field:"tickets",mutator:ticketMutator,formatter:'html'},
+			{tooltip:false, resizable: false, title:"Tickets", field:"vultickets",mutator:ticketMutator,formatter:'html'},
 			{resizable: false, title:"Progress", field:"progress", mutator:progressMutator,formatter:"progress",
 				formatterParams:{
 					min:0,
 					max:100,
-					color:["#4F7942", "#98FB98", "#A9A9A9"],
+					color:function(value){ if (value < 100) return "#98FB98"; return "#A9A9A9";},
 					legendColor:"#000000",
 					legendAlign:"center",
 					legend:function(value){if (value == 0) return '';return  '<span style="font-size:8px;">'+value+'%</span>'},
 				}
 			},
+			{tooltip:false, resizable: false, title:"Other Fixes", field:"othertickets",mutator:ticketMutator,formatter:'html'},
+			
 			{resizable: false, title:"Status", field:"status",editor:"select",
 				editorParams:paramLookup,
 				cellClick:function(e, cell)
 				{
 					cur_row = cell.getRow();
 				},
-				formatter:function(cell, formatterParams)
+				/*formatter:function(cell, formatterParams)
 				{
 					var value = cell.getValue();
+					var row = cell.getRow();
+					if((row._row.data.vultickets.length>0)&&(value == 'OPEN'))
+						return 'FIX';
+					else
 					return value;
-				}
+				}*/
 			},
 			{resizable: false, title:"Comments", field:"comment", width:"25%", editor:"input",
 				cellClick:function(e, cell)
@@ -152,7 +165,7 @@ $(function()
 			}
 			//this.rowFormatter ();
 		},
-		rowFormatter:function(row)
+		/*rowFormatter:function(row)
 		{
 			//console.log(row.getData().status);
 			//console.log("---"+row.getElement().style.color);
@@ -171,7 +184,7 @@ $(function()
 			}
 			
 			row.getElement().style.color = "grey";
-		},
+		},*/
 		initialSort:
 		[
 			{column:"baseScore", dir:"desc"}
@@ -223,6 +236,19 @@ $(function()
 		if(count == 0)
 			return 0;
 		return progress/count;
+	}
+	function fixedvulsMutator(value, data, type, params, component)
+	{
+		var retval = '';
+		var del = '';
+		for(var i=0;i<value.length;i++)
+		{
+			retval += del+value[0].product.name;
+			//console.log(value[0].product.name);
+			del = ",";
+			
+		}
+		return retval;
 	}
 	function ticketMutator(value, data, type, params, component)
 	{
@@ -292,7 +318,14 @@ $(function()
 	{
 		//cell - the cell component
 		//do some processing and return the param object
-		return {"values":{"OPEN":"OPEN", "FIX":"FIX","FIXED":"FIXED","IGNORE":"IGNORE"}};
+		var row = cell.getRow();
+		//console.log("hello");
+	
+		if(row._row.data.progress == 100)
+			return {"values":{"OPEN":"OPEN", "FIX":"FIX","FIXED":"FIXED"}};
+		if(row._row.data.vultickets.length > 0)
+			return {"values":{"OPEN":"OPEN", "FIX":"FIX"}};
+		return {"values":{"OPEN":"OPEN", "FIX":"FIX","IGNORE":"IGNORE"}};
 	}
 	var table = new Tabulator("#table1", settings);
 	//table.addFilter("status","!=",'IGNORE');
