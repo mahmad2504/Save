@@ -151,6 +151,5 @@ class Packages extends MongoCollection
 		$this->packages = array_values($packages);
 		return $this->packages;
 	}
-	
 }
 ?>

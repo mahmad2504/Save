@@ -334,6 +334,37 @@ $(function()
 	function customFilter(data, filterParams)
 	{
 		var viewall = $('#checkbox_viewall').prop('checked');
+		if(viewall == true) // checked 
+			return true;
+		
+		if(typeof(params.status)!== 'undefined')
+		{
+			if(params.status.toLowerCase() =='open')
+			{
+				if(data.status == 'OPEN')
+					return true;
+				return false;
+			}
+			else if(params.status.toLowerCase() =='fix')
+			{
+				if(data.status == 'FIX')
+					return true;
+				return false;
+			}
+			else if(params.status.toLowerCase() =='fixed')
+			{
+				if(data.status == 'FIXED')
+					return true;
+				return false;
+			}
+			else if(params.status.toLowerCase() =='ignore')
+			{
+				if(data.status == 'IGNORE')
+					return true;
+				return false;
+			}
+		}
+		var viewall = $('#checkbox_viewall').prop('checked');
 		if(!viewall)
 		{
 			if((data.status == 'OPEN')||(data.status == 'FIX'))

@@ -1,4 +1,5 @@
 /*Theme the Tabulator element*/
+body {background-color: lightgrey;}
 
 #table1{
     background-color:#FFF;

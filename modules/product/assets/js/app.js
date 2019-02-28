@@ -2,8 +2,9 @@ $(function()
 {
 	"use strict";
 	console.log("Starting JS");
-	console.log(resource);
-
+	$('#download').click(function(){
+		table.download("csv", "data.csv");
+	});
 	var settings = 
 	{
 		layout:"fitColumns",
@@ -27,18 +28,71 @@ $(function()
 			{ title:"Package", 
 				columns:
 				[
-					{resizable: false,title:"Name",field:"name", width:"15%", formatter:"html"},
-					{resizable: false, title:"Version", field:"version", width:"20%"},
+					{resizable: false,title:"Name",field:"name", width:"15%", formatter:"html",
+						formatter:function(cell, formatterParams)
+						{
+							var value = cell.getValue();
+							var row = cell.getRow();
+							return '<a href="'+row._row.data.product+"/"+row._row.data.name+'">'+value+'</a>';
+					
+							return value;
+						}
+					},
+					{resizable: false, title:"Version", field:"version", width:"20%",
+						formatter:function(cell, formatterParams)
+						{
+							var value = cell.getValue();
+							var row = cell.getRow();
+							return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'">'+value+'</a>';
+							return value;
+						}
+					},
 					{title:"Product", field:"product",width:"20%"}
 				]
 			},
 			{ title:"Vulnerabilities", 
 				columns:
 				[
-					{resizable: false,title:"Open", field:"open", align:"left", sorter:"number", width:"10%"},
-					{resizable: false,title:"Idnetified", field:"fix", align:"left", sorter:"number", width:"10%"},
-					{resizable: false,title:"Fixed", field:"fixed", align:"left", sorter:"number", width:"10%"},
-					{resizable: false,title:"Ignored", field:"ignored", align:"left", sorter:"number", width:"10%"},
+					{resizable: false,title:"Open", field:"open", align:"left", sorter:"number", width:"10%",
+						formatter:function(cell, formatterParams)
+						{
+							var value = cell.getValue();
+							var row = cell.getRow();
+							if(value > 0)
+								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=open">'+value+'</a>';
+							return value;
+						}
+					},
+					{resizable: false,title:"Idnetified", field:"fix", align:"left", sorter:"number", width:"10%",
+						formatter:function(cell, formatterParams)
+						{
+							var value = cell.getValue();
+							var row = cell.getRow();
+							if(value > 0)
+								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=fix">'+value+'</a>';
+							return value;
+						}
+					},
+					{resizable: false,title:"Fixed", field:"fixed", align:"left", sorter:"number", width:"10%",
+						formatter:function(cell, formatterParams)
+						{
+							var value = cell.getValue();
+							var row = cell.getRow();
+							if(value > 0)
+								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=fixed">'+value+'</a>';
+							return value;
+						}
+					},
+					{resizable: false,title:"Ignored", field:"ignored", align:"left", sorter:"number", width:"10%",
+						formatter:function(cell, formatterParams)
+						{
+							var value = cell.getValue();
+							var row = cell.getRow();
+							if(value > 0)
+								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=ignore">'+value+'</a>';
+							return value;
+						}
+					},
 				]
 			}
 		]
