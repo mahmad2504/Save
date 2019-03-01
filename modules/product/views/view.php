@@ -1,3 +1,13 @@
+<?php 
+session_start();
+if(isset($_SESSION['noheaders']))
+{
+	if($_SESSION['noheaders'] == 1)			
+	   $params->noheaders = 1;
+	else
+	   $params->noheaders = 0;
+}
+?>
 <!DOCTYPE html>
 <html>
 <head>

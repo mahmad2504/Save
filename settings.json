@@ -9,13 +9,23 @@
 		},
 		{
 			"method" : "ANY",
-			"uri" : "/:product/show",
+			"uri" : "/:product",
 			"endpoint" : "modules/product/index.php"
 		},
 		{
 			"method" : "ANY",
-			"uri" : "/:product/:package/show",
+			"uri" : "/:product/:package",
 			"endpoint" : "modules/package/index.php"
+		},
+		{
+			"method" : "ANY",
+			"uri" : "/:product/:package/:version",
+			"endpoint" : "modules/package/index.php"
+		},
+		{
+			"method" : "ANY",
+			"uri" : "/",
+			"endpoint" : "modules/home/index.php"
 		}
 	],
 	"cve_sources" : {

@@ -1,3 +1,7 @@
+<?php 
+CheckSession();
+SetSession();
+?>
 <!DOCTYPE html>
 <html>
 <head>

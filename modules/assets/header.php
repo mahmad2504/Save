@@ -1,6 +1,7 @@
 	<!-- Navigation -->
 <?php
 	if(isset($params->noheaders))
+		if($params->noheaders == 1)
 		return;
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
