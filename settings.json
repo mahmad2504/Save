@@ -57,17 +57,17 @@
 	"jira" : {
 		"conf" : {
 			"mentor" : {
-				"url" : "http://jira.alm.mentorg.com:8080",
+				"url" : "",
 				"cred" : {
-					"user" : "himp",
-					"pass" : "hmip"
-		}
-	},
+					"user" : "",
+					"pass" : ""
+				}
+			},
 			"atlassian" : {
-				"url" : "https://mentorgraphics.atlassian.net",
+				"url" : "",
 				"cred" : {
-					"user" : "mahmad",
-					"pass" : "gsmp1000"
+					"user" : "",
+					"pass" : ""
 				}
 			}
 		}
@@ -77,5 +77,5 @@
 	},
 	"cpemap" : {
 		"file" : "data/cpemap/cpemap.xlsx"
-		}
+	}
 }
