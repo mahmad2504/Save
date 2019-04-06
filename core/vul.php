@@ -73,7 +73,7 @@ class Vuls extends MongoCollection
 			$vul->source = $source;
 			$vul->product = $product;
 			$vul->package = $packagename;
-			$vul->version = $versionnumber;
+			$vul->version = $versionnumber."";
 			
 			//$vul->type = $this->DetermineVulType($cve,$packagename,$versionnumber);
 			$vul->type = $cve->type;

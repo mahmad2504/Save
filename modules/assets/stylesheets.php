@@ -4,5 +4,6 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $modulebase.'/assets/css/font.awesome.min.css';?>" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="<?php echo $modulebase.'/assets/css/tabulator.min.css.map';?>" rel="stylesheet" />
 <link rel="stylesheet" type="text/css" href="<?php echo $modulebase.'/assets/css/tabulator.min.css';?>" rel="stylesheet" /><link id="icon" rel="shortcut icon" href="<?php echo $modulebase.'/assets/images/favicon.ico';?>" type="image/x-icon" />
+<link rel="stylesheet" type="text/css" href="<?php echo $modulebase.'/assets/css/msc-style.css';?>" rel="stylesheet" /><link id="icon" rel="shortcut icon" href="<?php echo $modulebase.'/assets/images/favicon.ico';?>" type="image/x-icon" />
 <link rel="stylesheet" type="text/css" href="<?php echo $modulepath.'/assets/css/style.css';?>">
 <link rel="stylesheet" type="text/css" href="<?php echo $modulebase.'/assets/css/style.css';?>">

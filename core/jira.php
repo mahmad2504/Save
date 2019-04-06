@@ -26,7 +26,7 @@ class Jira extends MongoCollection implements ITicket
 	function Sync()
 	{
 		$fields = 'summary,key,status,timeoriginalestimate,timespent,labels';
-		
+		//SendConsole(time(),"Syncing With Jira");
 		$lastupdatedon = '';
 		$criteria = ["type"=>"updatedon"];
 		$record = $this->Find($criteria);
@@ -48,7 +48,8 @@ class Jira extends MongoCollection implements ITicket
         );
 		foreach($issues as $issue)
 		{
-			SendConsole(time(),"Syned ".$issue->key);
+			$issue->summary = trim($issue->summary);
+			//SendConsole(time(),"Syned ".$issue->key);
 			$issue->status = $this->MapStatus($issue->status);
 			$issue->progress = 0;
 			if($issue->estimate > 0)
@@ -62,6 +63,8 @@ class Jira extends MongoCollection implements ITicket
 						$issue->progress = 99;
 				}
 			}
+			if($issue->status  == 'done')
+				$issue->progress = 100;
 			$issue->source = 'jira';
 			if(!isset($issue->product))
 				$issue->product = [];

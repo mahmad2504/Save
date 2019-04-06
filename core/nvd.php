@@ -42,6 +42,7 @@ class Nvd extends MongoCollection
 		{
 			$data = new StdClass();
 			$data->cve = $cve->cve->CVE_data_meta->ID;
+			//var_dump($data->cve); 
 			if(isset($cve->impact->baseMetricV3))
 			{
 				$data->cvssVersion = 3.0;
@@ -66,16 +67,14 @@ class Nvd extends MongoCollection
 		$obj = new \StdClass();
 		$obj->package_match = '';
 		$obj->version_match = '';
-		//echo $cve->cve->CVE_data_meta->ID." ".$packagename." ".$versionnumber."\n";
+		//echo $cve->cve->CVE_data_meta->ID." ".$packagename." ".$versionnumber."<br>";
 		//var_dump($cve->configurations);
 		$debug=0;
 		//if('CVE-2015-3395' == $cve->cve->CVE_data_meta->ID)
 		//	$debug=1;
 		for($i=0;$i < count($cve->configurations->nodes);$i++)
 		{
-			
-			$node = $cve->configurations->nodes[$i];
-			
+			$node = $cve->configurations->nodes[$i];	
 			if($node->operator == 'OR')
 			{
 				$obj = $this->ProcessImpactNode($node->cpe_match,$packagename,$versionnumber,$obj,$aliases);
@@ -84,6 +83,15 @@ class Nvd extends MongoCollection
 			}
 			else if($node->operator == 'AND')
 			{
+				//var_dump($node);
+				if(isset($node->cpe_match))
+				{
+					$obj = $this->ProcessImpactNode($node->cpe_match,$packagename,$versionnumber,$obj,$aliases);
+					if($obj->version_match != null)
+						return $obj;
+				}
+				else
+				{
 				for($j=0;$j<count($node->children);$j++)
 				{
 					$obj = $this->ProcessImpactNode($node->children[$j]->cpe_match,$packagename,$versionnumber,$obj,$aliases);
@@ -92,22 +100,30 @@ class Nvd extends MongoCollection
 				}
 			}
 		}
+		}
 		return $obj;
 	}
 	function version_compare2($a, $b) 
 	{ 
-		$a = explode(".", rtrim($a, ".0")); //Split version into pieces and remove trailing .0 
-		$b = explode(".", rtrim($b, ".0")); //Split version into pieces and remove trailing .0 
+	
+		$a = explode(".", str_replace(".0",'',$a)); //Split version into pieces and remove trailing .0 
+		$b = explode(".", str_replace(".0",'',$b)); //Split version into pieces and remove trailing .0 
+	
 		foreach ($a as $depth => $aVal) 
 		{ //Iterate over each piece of A 
 			if (isset($b[$depth])) 
 			{ //If B matches A to this depth, compare the values 
-				if ($aVal > $b[$depth]) return 1; //Return A > B 
+				
+				if ($aVal > $b[$depth]) 
+				{
+					return 1; //Return A > B 
+				}
 				else if ($aVal < $b[$depth]) return -1; //Return B > A 
 				//An equal result is inconclusive at this point 
 			} 
 			else 
 			{ //If B does not match A to this depth, then A comes after B in sort order 
+	
 				return 1; //so return A > B 
 			} 
 		} 
@@ -139,12 +155,15 @@ class Nvd extends MongoCollection
 					$failed = 0;
 					$passed = 0;
 					$matched_versions = '';
+					$rangecheckpresent = 0;
 					//var_dump($cpe);
 					if(isset($cpe->versionStartExcluding))
 					{
+						$rangecheckpresent = 1;
 						if($this->version_compare2($version,$cpe->versionStartExcluding)>0)
 						{
 							$matched_versions = 'versionStartExcluding:'.$cpe->versionStartExcluding;
+							//echo "First\r\n";
 							$passed++;
 						}
 						else
@@ -152,10 +171,12 @@ class Nvd extends MongoCollection
 					}
 					if(isset($cpe->versionStartIncluding))
 					{
+						$rangecheckpresent = 1;
 						if( ($this->version_compare2($version,$cpe->versionStartIncluding)==0)||
 							($this->version_compare2($version,$cpe->versionStartIncluding)>0))
 						{
 							$matched_versions = 'versionStartIncluding:'.$cpe->versionStartIncluding;
+							//echo "Second\r\n";
 							$passed++;
 						}
 						else
@@ -163,9 +184,15 @@ class Nvd extends MongoCollection
 					}
 					if(isset($cpe->versionEndExcluding))
 					{
+						$rangecheckpresent = 1;
+						//echo "-".$version."-".$cpe->versionEndExcluding."-<br>";
+						//echo $this->version_compare2($version,$cpe->versionEndExcluding)."<br>";
+						//echo version_compare($version,$cpe->versionEndExcluding)."<br>";
+						
 						if($this->version_compare2($version,$cpe->versionEndExcluding)<0)
 						{
 							$matched_versions = 'versionEndExcluding:'.$cpe->versionEndExcluding;
+							//echo "Third\r\n";
 							$passed++;
 						}
 						else
@@ -173,10 +200,12 @@ class Nvd extends MongoCollection
 					}
 					if(isset($cpe->versionEndIncluding))
 					{
+						$rangecheckpresent = 1;
 						if( ($this->version_compare2($version,$cpe->versionEndIncluding)==0)||
 							($this->version_compare2($version,$cpe->versionEndIncluding)<0))
 						{
 							$matched_versions = 'versionEndIncluding:'.$cpe->versionEndIncluding;
+							//echo "Fourth\r\n";
 							$passed++;
 						}
 						else
@@ -188,14 +217,16 @@ class Nvd extends MongoCollection
 					{
 						$obj->package_match = $cpeproduct;
 						$obj->version_match = '';
-						return $obj;
+						//return $obj;
 					}
-					if($passed > 0)
+					else if($passed > 0)
 					{
 						$obj->package_match = $cpeproduct;
 						$obj->version_match = $matched_versions;
 						return $obj;
 					}
+					if($rangecheckpresent == 0)
+					{
 					if($this->version_compare2($version,$cpeversion)==0)
 					{
 						$obj->package_match = $cpeproduct;
@@ -203,12 +234,29 @@ class Nvd extends MongoCollection
 						//$cpe->cpe23Uri
 						return $obj;
 					}
+						if($cpeversion == '*')
+						{
+							
 					$obj->package_match = $cpeproduct;
-					$obj->version_match = '';
+							$obj->version_match = '*';
+							//$cpe->cpe23Uri
+							return $obj;
+						}
+						if($cpeversion == '-')
+						{
+							
+							$obj->package_match = $cpeproduct;
+							$obj->version_match = '-';
+							//$cpe->cpe23Uri
+							//return $obj;
+						}
+					}
+					//$obj->package_match = $cpeproduct;
+					//$obj->version_match = '';
 					//dvultype.package = 'MATCH';
 					//dvultype.version = 'NOT_MATCH;
-					if($obj->version_match != '')
-						return $obj;
+					//if($obj->version_match != '')
+					//	return $obj;
 				}
 			}
 		}

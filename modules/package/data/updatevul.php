@@ -5,7 +5,7 @@ $id = ConvertId($params->id);
 $vul = json_decode($requestdata);
 
 $criteria = ['_id'=>$id];
-$fields = ['status' => $vul->status,'comment' => $vul->comment];
+$fields = ['publish'=>$vul->publish, 'status' => $vul->status,'comment' => $vul->comment];
 /*['$and' => 
 			[ 
 				['cve' => $vul->cve],

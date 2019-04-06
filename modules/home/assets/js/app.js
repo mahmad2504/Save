@@ -39,9 +39,10 @@ $(function()
 				{
 					var value = cell.getValue();
 					var row = cell.getRow();
+					var badge = '<span class="badge badge-dark">'+value+'</span>';
 					if(value > 0)
-						return '<a href="'+row._row.data.name+'/all">'+value+'</a>';
-					return value;
+						return '<a href="'+row._row.data.name+'/all">'+badge+'</a>';
+					return '';
 				}			
 			},
 			
@@ -50,19 +51,21 @@ $(function()
 				{
 					var value = cell.getValue();
 					var row = cell.getRow();
+					var badge = '<span class="badge badge-info">'+value+'</span>';
 					if(value > 0)
-						return '<a href="'+row._row.data.name+'/all?status=open">'+value+'</a>';
-					return value;
+						return '<a href="'+row._row.data.name+'/all?status=open">'+badge+'</a>';
+					return '';
 				}
 			},
-			{resizable: false,title:"Idnetified", field:"fixvulcount", align:"left", sorter:"number", width:"15%",
+			{resizable: false,title:"Identified", field:"fixvulcount", align:"left", sorter:"number", width:"15%",
 				formatter:function(cell, formatterParams)
 				{
 					var value = cell.getValue();
 					var row = cell.getRow();
+					var badge = '<span class="badge badge-warning">'+value+'</span>';
 					if(value > 0)
-						return '<a href="'+row._row.data.name+'/all?status=fix">'+value+'</a>';
-					return value;
+						return '<a href="'+row._row.data.name+'/all?status=fix">'+badge+'</a>';
+					return '';
 				}
 			},
 			{resizable: false,title:"Fixed", field:"fixedvulcount", align:"left", sorter:"number", width:"15%",
@@ -70,9 +73,10 @@ $(function()
 				{
 					var value = cell.getValue();
 					var row = cell.getRow();
+					var badge = '<span class="badge badge-success">'+value+'</span>';
 					if(value > 0)
-						return '<a href="'+row._row.data.name+'/all?status=fixed">'+value+'</a>';
-					return value;
+						return '<a href="'+row._row.data.name+'/all?status=fixed">'+badge+'</a>';
+					return '';
 				}
 			},
 			{resizable: false,title:"Ignored", field:"ignoredvulcount", align:"left", sorter:"number", width:"15%",
@@ -80,9 +84,10 @@ $(function()
 				{
 					var value = cell.getValue();
 					var row = cell.getRow();
+					var badge = '<span class="badge badge-secondary">'+value+'</span>';
 					if(value > 0)
-						return '<a href="'+row._row.data.name+'/all?status=ignore">'+value+'</a>';
-					return value;
+						return '<a href="'+row._row.data.name+'/all?status=ignore">'+badge+'</a>';
+					return '';
 				}
 			}
 		]

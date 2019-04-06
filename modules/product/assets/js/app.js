@@ -9,6 +9,8 @@ $(function()
 	{
 		layout:"fitColumns",
 		columnVertAlign:"bottom", 
+		pagination:"local",
+		paginationSize:16,
 		//height:105, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
 		ajaxURL:resource+"?data=data.php", //ajax URL
 		//autoColumns:true,
@@ -24,7 +26,7 @@ $(function()
 		},
 		columns:
 		[
-			{resizable: false,title:"",formatter:"rownum", align:"center", width:"5%", headerSort:false},
+			{resizable: false,title:"",formatter:"rownum", align:"center", width:"3%", headerSort:false},
 			{ title:"Package", 
 				columns:
 				[
@@ -58,19 +60,29 @@ $(function()
 						{
 							var value = cell.getValue();
 							var row = cell.getRow();
+							var style = '';
+							if(row._row.data.openconflict > 0)
+								style="outline: none;border-color: #ff0000;box-shadow: 0 0 10px #98FB98;"
+					
+							var badge = '<span style="'+style+'" class="badge badge-info">'+value+'</span>';
 							if(value > 0)
-								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=open">'+value+'</a>';
-							return value;
+								return '<a  href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=open">'+badge+'</a>';
+							return '';
 						}
 					},
-					{resizable: false,title:"Idnetified", field:"fix", align:"left", sorter:"number", width:"10%",
+					{resizable: false,title:"Identified", field:"fix", align:"left", sorter:"number", width:"10%",
 						formatter:function(cell, formatterParams)
 						{
 							var value = cell.getValue();
 							var row = cell.getRow();
+							var style = '';
+							if(row._row.data.fixconflict > 0)
+								style="outline: none;border-color: #ff0000;box-shadow: 0 0 10px #0000ff;"
+					
+							var badge = '<span style="'+style+'" class="font-weight-bold badge badge-warning">'+value+'</span>';
 							if(value > 0)
-								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=fix">'+value+'</a>';
-							return value;
+								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=fix">'+badge+'</a>';
+							return '';
 						}
 					},
 					{resizable: false,title:"Fixed", field:"fixed", align:"left", sorter:"number", width:"10%",
@@ -78,9 +90,14 @@ $(function()
 						{
 							var value = cell.getValue();
 							var row = cell.getRow();
+							var style = '';
+							if(row._row.data.fixedconflict > 0)
+								style="outline: none;border-color: #ff0000;box-shadow: 0 0 10px #ff0000;"
+					
+							var badge = '<span style="'+style+'" class="badge badge-success">'+value+'</span>';
 							if(value > 0)
-								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=fixed">'+value+'</a>';
-							return value;
+								return '<a  href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=fixed">'+badge+'</a>';
+							return '';
 						}
 					},
 					{resizable: false,title:"Ignored", field:"ignored", align:"left", sorter:"number", width:"10%",
@@ -88,9 +105,14 @@ $(function()
 						{
 							var value = cell.getValue();
 							var row = cell.getRow();
+							var style = '';
+							if(row._row.data.ignoredconflict > 0)
+								style="outline: none;border-color: #ff0000;box-shadow: 0 0 10px #ff0000;"
+					
+							var badge = '<span style="'+style+'" class="badge badge-secondary">'+value+'</span>';
 							if(value > 0)
-								return '<a href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=ignore">'+value+'</a>';
-							return value;
+								return '<a  href="'+row._row.data.product+"/"+row._row.data.name+"/"+row._row.data.version+'?status=ignore">'+badge+'</a>';
+							return '';
 						}
 					},
 				]

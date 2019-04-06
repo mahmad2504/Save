@@ -47,7 +47,7 @@ class Packages extends MongoCollection
 			$reader = \PhpOffice\PhpSpreadsheet\IOFactory::createReader("Xlsx");
 			$spreadsheet = $reader->load($folder."/".$filename);
 			$sheetData = $spreadsheet->getActiveSheet()->toArray();
-			SendConsole(time(),"Importing ".$filename);
+			SendConsole(time(),"Importing ".$folder."/".$filename);
 			$product = new StdClass();
 			$product->menifest = $filename;
 			

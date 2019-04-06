@@ -2,8 +2,8 @@ $(function()
 {
 	"use strict";
 	var fixopenfiltervalue = ["FIX","OPEN"];
-	console.log("Starting JS");
-	
+	console.log("Starting Package Js");
+
 	$('#download').click(function(){
 		table.download("csv", "data.csv");
 	});
@@ -96,9 +96,12 @@ $(function()
 				{
 					var value = cell.getValue();
 					if(value.length > 0)
+					{
+						if((value=='-')||(value=='*'))
+							return 'PARTIAL';
 						return 'EXACT';
-				//		if(value != 'MANUAL')
-					//		return 'EXACT';
+					}
+					
 					return value;
 				}
 			},
@@ -131,7 +134,7 @@ $(function()
 					return value;
 				}*/
 			},
-			{resizable: false, title:"Comments", field:"comment", width:"25%", editor:"input",
+			{resizable: false, title:"Comments", field:"comment", width:"20%", editor:"input",
 				cellClick:function(e, cell)
 				{
 					cur_row = cell.getRow();
@@ -141,6 +144,20 @@ $(function()
 					var value = cell.getValue();
 					return value;
 				}
+			},
+			{resizable: false, title:"Pub", field:"publish", width:"5%", align:"center", editor:true, formatter:"tickCross",
+				editable:function(cell)
+				{
+					//cell - the cell component for the editable cell
+					//get row data
+					var data = cell.getRow().getData();
+					return ((data.status == 'FIX')||(data.status == 'FIXED')); // only allow the name cell to be edited if the age is over 18
+				},
+				cellClick:function(e, cell)
+				{
+					cur_row = cell.getRow();
+				},
+				
 			},
 		],
 		rowClick:function(e, row){
@@ -159,7 +176,7 @@ $(function()
 			if(cur_row != null)
 			{
 				params.id = cur_row._row.data.id;
-				//console.log(params.id);
+				console.log(params.publish);
 				GetResource(0,resource,'data=updatevul',params,cur_row._row.data,successcb) ;
 				cur_row.reformat();
 			}

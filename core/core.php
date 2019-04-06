@@ -31,7 +31,6 @@ function GetProuductsCount($product)
 			$product->ignoredvulcount = 0;
 			$productststats[$product->name] = $product;
 		}
-
 		$product->packagescount++;
 		$product->openvulcount += $vul->open;
 		$product->fixvulcount += $vul->fix;
@@ -71,23 +70,50 @@ function GetProductVulnerabilityCount($product)
 		$ignored = 0;
 		$fix = 0;
 		$open = 0;
+		$ignoredconflict = 0;
+		$openconflict = 0;
+		$fixedconflict = 0;
+		$fixconflict = 0;
 		foreach($package->vuls as $vul)
 		{
 			//var_dump($vul);
 			//echo($vul->status)."<br>";
+			$count = count($vul->vultickets);
+			
 			if($vul->status == 'FIX')
+			{
+				if($count == 0)
+					$fixconflict++;
+				
 				$fix++;
+			}
 			else if($vul->status == 'IGNORE')
+			{
+				if($count > 0)
+					$ignoredconflict++;
 				$ignored++;
+			}
 			else if($vul->status == 'FIXED')
+			{
+				if($count == 0)
+					$fixedconflict++;
 				$fixed++;
+			}
 			else
+			{
+				if($count > 0)
+					$openconflict++;
 				$open++;
+		}
 		}
 		$package->open = $open;
 		$package->fix = $fix;
 		$package->fixed = $fixed;
 		$package->ignored = $ignored;
+		$package->ignoredconflict = $ignoredconflict;
+		$package->openconflict = $openconflict;
+		$package->fixedconflict = $fixedconflict;
+		$package->fixconflict = $fixconflict;
 		//var_dump($package);
 		//echo $package->product." ".$package->name." ".$package->version." ".$weight_1." ".$weight_2."<br>";
 	}
@@ -121,16 +147,18 @@ function GetVulnerabilities($product='all',$package='all',$version='all')
 		$query['package'] = [ '$regex' => $package, '$options' => 'i' ];
 	if($version != 'all')
 	{
-		if(isfloat($version)){
+		$query['version'] = [ '$regex' => $version, '$options' => 'i' ];
+		/*if(isfloat($version)){
 			$query['version'] = (float)$version;
+			//echo $version;
 		}
 		else
 		{
 			$query['version'] = $version;
+		}*/
 		}
 		
-	}
-	
+	//$query['version'] = $version;
 	//var_dump($query);
 	/*
 	if($package == 'all')
@@ -212,6 +240,11 @@ function GetVulnerabilities($product='all',$package='all',$version='all')
 		$vul->weight = 0;
 		//$vul->progress = rand(0,100);
 		$vul->version_match = $vul->type->version_match;
+		
+		if(isset($vul->publish))
+			$vul->publish = $vul->publish;
+		else
+			$vul->publish = false;
 		
 		if(isset($vul->comment))
 			$vul->comment = $vul->comment;

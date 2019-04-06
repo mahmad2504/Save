@@ -11,7 +11,7 @@
 	<?php
 	ModuleJsCode();
 	?>
-</head>>
+</head>
 <body>
 	<p>
 		<button id="clear">Clear log</button>

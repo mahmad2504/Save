@@ -108,6 +108,8 @@ class JiraRest
 		$resource="/rest/api/latest/search?jql=".$query.'&maxResults='.$maxresults.'&fields='.$fields;
 		//echo $resource;
 		$result = $this->GetResource($resource,$server);
+		if($result == null)
+			return [];
 		
 		$returnvalue = json_decode($result,true);
 		
