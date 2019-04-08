@@ -43,6 +43,7 @@ function GetProuductsCount($product)
 function GetProductVulnerabilityCount($product)
 {
 	$vuls = GetVulnerabilities($product);
+	$packages = array();
 	foreach($vuls as $vul)
 	{
 		//var_dump($vul);
@@ -134,7 +135,7 @@ function isfloat($f) {
 	return ($f == (string)(float)$f);
 }
 
-function GetVulnerabilities($product='all',$package='all',$version='all')
+function GetVulnerabilities($product='all',$package='all',$version='all',$publishonly=false)
 {
 	global $db;
 	$vulcol = new Vuls();
@@ -157,6 +158,8 @@ function GetVulnerabilities($product='all',$package='all',$version='all')
 			$query['version'] = $version;
 		}*/
 		}
+	if($publishonly == true)
+		$query['publish'] = true;
 		
 	//$query['version'] = $version;
 	//var_dump($query);

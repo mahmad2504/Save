@@ -35,6 +35,7 @@ class Router
 	function Execute($method,$endpoint,$params,$data)
 	{
 		global $currentroute;
+		$currentroutes = array();
 		$parts = explode("/",$endpoint);
 		
 		if($parts[0]=='')
@@ -55,6 +56,7 @@ class Router
 			{
 				$i=0;
 				$prop = new \StdClass();
+				$route->equal =	0;
 				foreach($route->parts as $part)
 				{
 					if($part[0] == ':')
@@ -69,6 +71,8 @@ class Router
 						$i=0;
 						break;
 					}
+					else 
+						$route->equal =	1;
 				}
 				if($i == $route->count)
 				{
@@ -78,6 +82,7 @@ class Router
 					
 					foreach($currentroute->parts as &$part)
 					{
+						//echo $part." ".$endpoint."<br>";
 						if($part[0] ==':')
 						{
 							$spart = substr($part,1,strlen($part));
@@ -87,8 +92,9 @@ class Router
 					//var_dump($currentroute->parts);
 					//var_dump($currentroute);
 					//echo "Selected Route is "."<BR>";
+					$currentroutes[] = $currentroute;
 					
-					$func  = $route->resource;
+					/*$func  = $route->resource;
 					if(function_exists($func))
 					{
 						$func($params,$data);
@@ -98,10 +104,38 @@ class Router
 					{
 						$route->modulepath =  $route->basedir.pathinfo($route->resource)['dirname'];
 						return $route->resource;
-					}
+					}*/
 				}
 			}
 		}
+		if(count($currentroutes)>0)
+		{
+			$currentroute=$currentroutes[count($currentroutes)-1];
+			$func  = $currentroute->resource;
+			if(function_exists($func))
+			{
+				$func($params,$data);
+				return null;
+			}
+			else
+			{
+				$currentroute->modulepath =  $currentroute->basedir.pathinfo($currentroute->resource)['dirname'];
+				return $currentroute->resource;
+			}
+		}
+		
+		$func  = $route->resource;
+		if(function_exists($func))
+		{
+			$func($params,$data);
+			return null;
+		}
+		else
+		{
+			$route->modulepath =  $route->basedir.pathinfo($route->resource)['dirname'];
+			return $route->resource;
+		}
+		
 		$func = $this->default;
 		if($this->default !=  null)
 			$func($method,$endpoint,$params,$data);

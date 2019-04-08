@@ -26,6 +26,11 @@
 			"method" : "ANY",
 			"uri" : "/",
 			"endpoint" : "modules/home/index.php"
+		},
+		{
+			"method" : "ANY",
+			"uri" : "/portal",
+			"endpoint" : "modules/portal/index.php"
 		}
 	],
 	"cve_sources" : {
