@@ -1,4 +1,4 @@
 <?php
-$data = GetVulnerabilities();
+$data = GetVulnerabilities('all','all','all',true);
 SendResponse($data);
 ?>
