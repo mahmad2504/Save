@@ -8,7 +8,7 @@
 		?>
 </head>
 <body>
-
+		<img style="height:100px;" src="<?php echo $modulepath;?>/assets/images/header.png"></img>
 		<div id="wrap">
 			<div class="container">
             <h3>Mentor Embedded Linux CVE</h3>
