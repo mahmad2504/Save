@@ -108,6 +108,15 @@ class Router
 				}
 			}
 		}
+		//var_dump($currentroutes);
+		foreach($currentroutes as $cr)
+		{
+			if($cr->equal ==1 )
+			{
+				$currentroutes=array();
+				$currentroutes[] = $cr;
+			}
+		}
 		if(count($currentroutes)>0)
 		{
 			$currentroute=$currentroutes[count($currentroutes)-1];

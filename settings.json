@@ -37,7 +37,7 @@
 		"nvd" : [
 			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2019.json.zip",
 			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2018.json.zip",
-			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2017.json.zip",
+			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2017.json.zip",	
 			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2016.json.zip",
 			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2015.json.zip",
 			"https://nvd.nist.gov/feeds/json/cve/1.0/nvdcve-1.0-2014.json.zip",

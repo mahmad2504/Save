@@ -12,7 +12,7 @@ $(function()
 		pagination:"local",
 		paginationSize:16,
 		//height:105, // set height of table (in CSS or here), this enables the Virtual DOM and improves render speed dramatically (can be any valid css height value)
-		ajaxURL:resource+"?data=data.php", //ajax URL
+		ajaxURL:"?data=data.php", //ajax URL
 		//autoColumns:true,
 		ajaxResponse:function(url, params, response)
 		{

@@ -67,6 +67,7 @@ class Nvd extends MongoCollection
 		$obj = new \StdClass();
 		$obj->package_match = '';
 		$obj->version_match = '';
+		//SendConsole(time(),$cve->cve->CVE_data_meta->ID); 
 		//echo $cve->cve->CVE_data_meta->ID." ".$packagename." ".$versionnumber."<br>";
 		//var_dump($cve->configurations);
 		$debug=0;
@@ -105,31 +106,65 @@ class Nvd extends MongoCollection
 	}
 	function version_compare2($a, $b) 
 	{ 
+	$msg = "Comparing ".$a." with ".$b;
+	//SendConsole(time(),$msg); 
+		//$a = explode(".", str_replace(".0",'',$a)); //Split version into pieces and remove trailing .0 
+		//$b = explode(".", str_replace(".0",'',$b)); //Split version into pieces and remove trailing .0 
+	//echo rtrim($b, ".0");
 	
-		$a = explode(".", str_replace(".0",'',$a)); //Split version into pieces and remove trailing .0 
-		$b = explode(".", str_replace(".0",'',$b)); //Split version into pieces and remove trailing .0 
+	$adash = explode(".", $a); //Split version into pieces and remove trailing .0 
+	if(end($adash)==0)
+		$a = explode(".", rtrim($a, ".0")); //Split version into pieces and remove trailing .0 
+    else
+		$a =$adash;
+	
+	$bdash = explode(".", $b);
+	if(end($bdash)==0)
+		$b = explode(".", rtrim($b, ".0")); //Split version into pieces and remove trailing .0 
+	else
+		$b = $bdash;
+	
+	//SendConsole(time(),print_r($a)."--".print_r($b)); 
 	
 		foreach ($a as $depth => $aVal) 
 		{ //Iterate over each piece of A 
+			$aVal = trim($aVal);
 			if (isset($b[$depth])) 
 			{ //If B matches A to this depth, compare the values 
-				
+				$b[$depth] = trim($b[$depth]);
 				if ($aVal > $b[$depth]) 
 				{
+					//echo "[".$aVal."]".">"."[".$b[$depth]."]\r\n";
+					//echo gettype($aVal).">".gettype($b[$depth])."\r\n";
+					//echo 'A > B \r\n';
 					return 1; //Return A > B 
 				}
-				else if ($aVal < $b[$depth]) return -1; //Return B > A 
+				else if ($aVal < $b[$depth]) 
+				{
+					//echo 'A < B \r\n';
+					return -1; //Return B > A 
+				}
 				//An equal result is inconclusive at this point 
 			} 
 			else 
 			{ //If B does not match A to this depth, then A comes after B in sort order 
 	
+				//echo 'A >> B \r\n';
 				return 1; //so return A > B 
 			} 
 		} 
 		//At this point, we know that to the depth that A and B extend to, they are equivalent. 
 		//Either the loop ended because A is shorter than B, or both are equal. 
-		return (count($a) < count($b)) ? -1 : 0; 
+		$retval = (count($a) < count($b)) ? -1 : 0; 
+		/*if($retval == -1)
+		{
+			echo 'A < B \r\n';
+		}
+		else
+		{
+			echo 'A = B \r\n';
+		}*/
+		return $retval ;
 	} 
 	function ProcessImpactNode($cpe_match,$package,$version,$obj,$aliases)
 	{
@@ -200,16 +235,21 @@ class Nvd extends MongoCollection
 					}
 					if(isset($cpe->versionEndIncluding))
 					{
+						
+						//SendConsole(time(),$version."--".$cpe->versionEndIncluding); 
+						
 						$rangecheckpresent = 1;
 						if( ($this->version_compare2($version,$cpe->versionEndIncluding)==0)||
 							($this->version_compare2($version,$cpe->versionEndIncluding)<0))
 						{
 							$matched_versions = 'versionEndIncluding:'.$cpe->versionEndIncluding;
-							//echo "Fourth\r\n";
 							$passed++;
 						}
 						else
+						{
+							//echo " Failed ".$this->version_compare2($version,$cpe->versionEndIncluding)."\r\n";
 							$failed++;
+					}
 					}
 					//echo "===========>".$failed." ".$passed." ".$version."<br>";
 					

@@ -10,7 +10,7 @@ else
 }
 //ignore_user_abort(true);
 //set_time_limit(0);
-$old = ini_set('memory_limit', '2192M'); 
+$old = ini_set('memory_limit', '4192M'); 
 require "modules/vendor/PhpSpreadsheet/vendor/autoload.php";
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -24,6 +24,8 @@ $product_packages = $packages->Get();
 
 foreach($product_packages as $package)
 {
+	//if(strlen(trim($package->name))==0)
+	//	continue;
 	$searchdata = '';
 	if(isset($package->aliases))
 	{
@@ -34,9 +36,15 @@ foreach($product_packages as $package)
 	else
 		$searchdata = '"'.$package->name.'" ';
 
+	
 	$projection = new Projection(['cve.CVE_data_meta.ID']);
 	//var_dump($searchdata);
 	$package->cves = $nvd->SearchText($searchdata,$projection);
+	if(count($package->cves) == 0)
+	{
+		if(strlen(trim($package->name))>0)
+			SendConsole(time(),"No CVE Found for ".$package->name); 
+	}
 	//var_dump($package->cves);
 }
 $packages->UpdateDb();

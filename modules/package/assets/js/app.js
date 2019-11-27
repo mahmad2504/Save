@@ -151,7 +151,7 @@ $(function()
 					//cell - the cell component for the editable cell
 					//get row data
 					var data = cell.getRow().getData();
-					return ((data.status == 'FIX')||(data.status == 'FIXED')); // only allow the name cell to be edited if the age is over 18
+					return true;//((data.status == 'FIX')||(data.status == 'FIXED')); // only allow the name cell to be edited if the age is over 18
 				},
 				cellClick:function(e, cell)
 				{
